@@ -1,0 +1,57 @@
+package com.r15tec.academia04.screens.splash_screen
+
+import android.widget.Toast
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import com.r15tec.academia04.components.dialogs.MonthPickerDialog
+
+@Composable
+fun TestScreen() {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+
+        val monthsList = listOf(
+            "JAN",
+            "FEV",
+            "MAR",
+            "ABR",
+            "MAI",
+            "JUN",
+            "JUL",
+            "AGO",
+            "SET",
+            "OUT",
+            "NOV",
+            "DEZ"
+        )
+        val context = LocalContext.current
+
+        var showDialog by remember {
+            mutableStateOf(true)
+        }
+
+        fun showResult(pos: Int) {
+            Toast.makeText(
+                context,
+                "Selecionou o mês ${monthsList[pos]}",
+                Toast.LENGTH_LONG).show()
+            showDialog = false
+        }
+
+        if (showDialog) {
+            MonthPickerDialog(
+                monthsList = monthsList,
+                year = "2022",
+                currentMonth = 10,
+                onDismiss = { showDialog = false },
+                onConfirm = {
+                    showResult(it)
+                }
+            )
+        }
+    }
+}
