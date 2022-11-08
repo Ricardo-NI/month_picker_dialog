@@ -1,0 +1,200 @@
+package com.r15tec.academia04.components.dialogs
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+
+@ExperimentalMaterial3Api
+@Composable
+fun MonthPickerDialog(
+    monthsList: List<String>,
+    year: String,
+    currentMonth: Int,
+    onDismiss: () -> Unit,
+    onConfirm: (Int) -> Unit
+) {
+    val selectedList = remember {
+        mutableStateListOf(false, false, false, false ,false, false, false, false, false ,false, false, false)
+    }
+
+    var currentPos by remember {
+        mutableStateOf(currentMonth)
+    }
+
+    DisposableEffect(key1 = currentPos){
+        selectedList[currentPos] = true
+        onDispose {  }
+    }
+
+    fun onSelectedValue(pos: Int){
+        selectedList[currentPos] = false
+        selectedList[pos] = true
+        currentPos = pos
+    }
+
+    Dialog(
+        onDismissRequest = onDismiss
+    ) {
+        Column(
+            modifier = Modifier
+                .width(300.dp)
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(10.dp)
+                ),
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+                    .background(
+                        color = Color.Red,
+                        shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Selecione o mês",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = monthsList[currentPos],
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = year,
+                        color = Color.LightGray,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            MonthsColumn(monthsList = monthsList, selectedList = selectedList){
+                onSelectedValue(it)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                TextButton(onClick = { onDismiss() }) {
+                    Text(
+                        text = "Cancelar",
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                TextButton(
+                    onClick = { onConfirm(currentPos) }
+                ) {
+                    Text(
+                        text = "Confirmar",
+                        color = Color.Red,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+@Composable
+fun MonthsColumn(
+  selectedList: List<Boolean>,
+  monthsList: List<String>,
+  onClick: (Int) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            MonthButton(selected = selectedList[0], monthName = monthsList[0]){onClick(0)}
+            MonthButton(selected = selectedList[1], monthName = monthsList[1]){onClick(1)}
+            MonthButton(selected = selectedList[2], monthName = monthsList[2]){onClick(2)}
+            MonthButton(selected = selectedList[3], monthName = monthsList[3]){onClick(3)}
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            MonthButton(selected = selectedList[4], monthName = monthsList[4]){onClick(4)}
+            MonthButton(selected = selectedList[5], monthName = monthsList[5]){onClick(5)}
+            MonthButton(selected = selectedList[6], monthName = monthsList[6]){onClick(6)}
+            MonthButton(selected = selectedList[7], monthName = monthsList[7]){onClick(7)}
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            MonthButton(selected = selectedList[8], monthName = monthsList[8]){onClick(8)}
+            MonthButton(selected = selectedList[9], monthName = monthsList[9]){onClick(9)}
+            MonthButton(selected = selectedList[10], monthName = monthsList[10]){onClick(10)}
+            MonthButton(selected = selectedList[11], monthName = monthsList[11]){onClick(11)}
+        }
+    }
+}
+
+@Composable
+fun MonthButton(
+    selected: Boolean,
+    monthName: String,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(56.dp)
+            .clip(shape = CircleShape)
+            .background(color = if (selected) Color.Red else Color.White)
+            .clickable { onClick() },
+    ) {
+        Text(
+            text = monthName,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(bottom = 2.dp),
+            color = if (selected) Color.White else Color.DarkGray,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+
+        )
+    }
+}
